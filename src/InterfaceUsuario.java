@@ -10,13 +10,13 @@ public class InterfaceUsuario {
     }
 
     public void exibirMenu() {
-        System.out.println("\nMENU PRINCIPAL");
+        System.out.println("\n========== MENU PRINCIPAL ==========");
         System.out.println("\n1. Codificar texto para Morse");
         System.out.println("\n2. Decodificar Morse para texto");
-        System.out.println("\n3. Visualizar árvore binária");
+        System.out.println("\n3. Visualizar árvore (Console)");
         System.out.println("\n4. Ver tabela de código Morse");
-        System.out.println("\n5. Demonstração com exemplo");
         System.out.println("\n0. Sair");
+        System.out.println("\nCaracteres na árvore: " + arvore.getTamanhoArvore());
         System.out.print("\nEscolha uma opção: ");
     }
 
@@ -32,55 +32,58 @@ public class InterfaceUsuario {
     }
 
     public void codificarTexto() {
-
-        System.out.println("\nCODIFICAÇÃO DE TEXTO");
+        System.out.println("\n========== CODIFICAÇÃO DE TEXTO ==========");
         System.out.print("\nDigite o texto a ser codificado: ");
         String texto = scanner.nextLine();
 
+        System.out.println("\nProcessando e construindo árvore...\n");
         String codigoMorse = arvore.codificar(texto);
 
-        System.out.println("\nResultado");
+        System.out.println("\n========== Resultado ==========");
         System.out.println("\nTexto original: " + texto);
-        System.out.println("\nCódigo Morse:   " + codigoMorse);
+        System.out.println("Código Morse:   " + codigoMorse);
+        System.out.println("\nA árvore foi atualizada com os caracteres usados!");
+        System.out.println("===============================");
     }
 
     public void decodificarMorse() {
-        System.out.println("\nDECODIFICAÇÃO DE CÓDIGO MORSE");
+        System.out.println("\n========== DECODIFICAÇÃO DE CÓDIGO MORSE ==========");
         System.out.println("\nInstruções:");
-        System.out.println("\nUse pontos (.) e traços (-)");
-        System.out.println("\nSepare letras com um espaço");
-        System.out.println("\nSepare palavras com três espaços");
+        System.out.println("  - Use pontos (.) e traços (-)");
+        System.out.println("  - Separe letras com um espaço");
+        System.out.println("  - Separe palavras com três espaços");
+        System.out.println("\n===================================================");
         System.out.print("\nDigite o código Morse: ");
         String codigoMorse = scanner.nextLine();
         
+        System.out.println("\nProcessando e construindo árvore...\n");
         String textoDecodificado = arvore.decodificar(codigoMorse);
  
-        System.out.println("\nResultado");
+        System.out.println("\n========== Resultado ==========");
         System.out.println("\nCódigo Morse:      " + codigoMorse);
-        System.out.println("\nTexto decodificado: " + textoDecodificado);
+        System.out.println("Texto decodificado: " + textoDecodificado);
+        System.out.println("\nA árvore foi atualizada com os caracteres usados!");
+        System.out.println("===============================");
     }
 
     public void visualizarArvore() {
+        if (arvore.getTamanhoArvore() == 0) {
+            System.out.println("\nA árvore ainda está vazia!");
+            System.out.println("Dica: Use as opções 1 ou 2 para codificar/decodificar");
+            System.out.println("e a árvore será construída automaticamente.");
+            return;
+        }
         VisualizadorArvore.imprimirArvore(arvore);
     }
 
     public void visualizarTabela() {
+        if (arvore.getTamanhoArvore() == 0) {
+            System.out.println("\nA árvore ainda está vazia!");
+            System.out.println("Dica: Use as opções 1 ou 2 para codificar/decodificar");
+            System.out.println("e a árvore será construída automaticamente.");
+            return;
+        }
         VisualizadorArvore.imprimirTabelaMorse(arvore);
-    }
-
-    public void demonstrarExemplo() {
-        System.out.println("\nDEMONSTRAÇÃO COM EXEMPLO");
-
-        String textoExemplo = "\nGalo vai ser campeao da sulamericana";
-        System.out.println("\nTexto de exemplo: " + textoExemplo);
-
-        String morse = arvore.codificar(textoExemplo);
-        System.out.println("\nCodificado:       " + morse);
-        
-        String decodificado = arvore.decodificar(morse);
-        System.out.println("\nDecodificado:     " + decodificado);
-        
-        System.out.println("\nA codificação e decodificação funcionam corretamente!");
     }
 
     public void aguardarContinuar() {

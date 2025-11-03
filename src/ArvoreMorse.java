@@ -4,54 +4,57 @@ import java.util.Map;
 public class ArvoreMorse {
     public NoMorse raiz;
     public Map<Character, String> tabelaCodificacao;
+    private static final Map<Character, String> CODIGOS_MORSE_PADRAO = new HashMap<>();
+    
+    static {
+        CODIGOS_MORSE_PADRAO.put('E', ".");
+        CODIGOS_MORSE_PADRAO.put('T', "-");
+        CODIGOS_MORSE_PADRAO.put('I', "..");
+        CODIGOS_MORSE_PADRAO.put('A', ".-");
+        CODIGOS_MORSE_PADRAO.put('N', "-.");
+        CODIGOS_MORSE_PADRAO.put('M', "--");
+        CODIGOS_MORSE_PADRAO.put('S', "...");
+        CODIGOS_MORSE_PADRAO.put('U', "..-");
+        CODIGOS_MORSE_PADRAO.put('R', ".-.");
+        CODIGOS_MORSE_PADRAO.put('W', ".--");
+        CODIGOS_MORSE_PADRAO.put('D', "-..");
+        CODIGOS_MORSE_PADRAO.put('K', "-.-");
+        CODIGOS_MORSE_PADRAO.put('G', "--.");
+        CODIGOS_MORSE_PADRAO.put('O', "---");
+        CODIGOS_MORSE_PADRAO.put('H', "....");
+        CODIGOS_MORSE_PADRAO.put('V', "...-");
+        CODIGOS_MORSE_PADRAO.put('F', "..-.");
+        CODIGOS_MORSE_PADRAO.put('L', ".-..");
+        CODIGOS_MORSE_PADRAO.put('P', ".--.");
+        CODIGOS_MORSE_PADRAO.put('J', ".---");
+        CODIGOS_MORSE_PADRAO.put('B', "-...");
+        CODIGOS_MORSE_PADRAO.put('X', "-..-");
+        CODIGOS_MORSE_PADRAO.put('C', "-.-.");
+        CODIGOS_MORSE_PADRAO.put('Y', "-.--");
+        CODIGOS_MORSE_PADRAO.put('Z', "--..");
+        CODIGOS_MORSE_PADRAO.put('Q', "--.-");
+        CODIGOS_MORSE_PADRAO.put('1', ".----");
+        CODIGOS_MORSE_PADRAO.put('2', "..---");
+        CODIGOS_MORSE_PADRAO.put('3', "...--");
+        CODIGOS_MORSE_PADRAO.put('4', "....-");
+        CODIGOS_MORSE_PADRAO.put('5', ".....");
+        CODIGOS_MORSE_PADRAO.put('6', "-....");
+        CODIGOS_MORSE_PADRAO.put('7', "--...");
+        CODIGOS_MORSE_PADRAO.put('8', "---..");
+        CODIGOS_MORSE_PADRAO.put('9', "----.");
+        CODIGOS_MORSE_PADRAO.put('0', "-----");
+    }
 
     public ArvoreMorse() {
         this.raiz = new NoMorse('\0');
         this.tabelaCodificacao = new HashMap<>();
-        construirArvore();
     }
 
-    private void construirArvore() {
-        inserir('E', ".");
-        inserir('T', "-");
-        inserir('I', "..");
-        inserir('A', ".-");
-        inserir('N', "-.");
-        inserir('M', "--");
-        inserir('S', "...");
-        inserir('U', "..-");
-        inserir('R', ".-.");
-        inserir('W', ".--");
-        inserir('D', "-..");
-        inserir('K', "-.-");
-        inserir('G', "--.");
-        inserir('O', "---");
-        inserir('H', "....");
-        inserir('V', "...-");
-        inserir('F', "..-.");
-        inserir('L', ".-..");
-        inserir('P', ".--.");
-        inserir('J', ".---");
-        inserir('B', "-...");
-        inserir('X', "-..-");
-        inserir('C', "-.-.");
-        inserir('Y', "-.--");
-        inserir('Z', "--..");
-        inserir('Q', "--.-");
-
-        inserir('1', ".----");
-        inserir('2', "..---");
-        inserir('3', "...--");
-        inserir('4', "....-");
-        inserir('5', ".....");
-        inserir('6', "-....");
-        inserir('7', "--...");
-        inserir('8', "---..");
-        inserir('9', "----.");
-        inserir('0', "-----");
-    }
-
-    public void inserir(char caractere, String codigoMorse) {
+    private void inserir(char caractere, String codigoMorse) {
+        if (tabelaCodificacao.containsKey(caractere)) {
+            return;
+        }
+        
         tabelaCodificacao.put(caractere, codigoMorse);
         NoMorse atual = raiz;
 
@@ -60,17 +63,22 @@ public class ArvoreMorse {
 
             if (simbolo == '.') {
                 if (atual.esquerda == null) {
-                    atual.esquerda = new NoMorse('\0');
+                    char proxCaractere = (i == codigoMorse.length() - 1) ? caractere : '\0';
+                    atual.esquerda = new NoMorse(proxCaractere);
                 }
                 atual = atual.esquerda;
             } else if (simbolo == '-') {
                 if (atual.direita == null) {
-                    atual.direita = new NoMorse('\0');
+                    char proxCaractere = (i == codigoMorse.length() - 1) ? caractere : '\0';
+                    atual.direita = new NoMorse(proxCaractere);
                 }
                 atual = atual.direita;
             }
         }
-        atual.caractere = caractere;
+        if (atual.caractere == '\0') {
+            atual.caractere = caractere;
+        }
+        System.out.println("✓ Caractere '" + caractere + "' adicionado à árvore!");
     }
 
     public String decodificar(String codigoMorse) {
@@ -83,19 +91,37 @@ public class ArvoreMorse {
 
         for (String palavra : palavras) {
             String[] letras = palavra.split(" ");
-            
+
             for (String letra : letras) {
                 if (!letra.isEmpty()) {
+                    if (!letra.matches("[.-]+")) {
+                        System.out.println("Caractere inválido ignorado: " + letra);
+                        continue;
+                    }
+
                     char caractereDecodificado = decodificarCaractere(letra);
                     if (caractereDecodificado != '\0') {
                         resultado.append(caractereDecodificado);
+                        
+                        char upper = Character.toUpperCase(caractereDecodificado);
+                        if (!tabelaCodificacao.containsKey(upper)) {
+                            inserir(upper, letra);
+                        }
                     } else {
-                        resultado.append('?');
+                        char encontrado = buscarNaTabelaPadrao(letra);
+                        if (encontrado != '\0') {
+                            resultado.append(encontrado);
+                            inserir(encontrado, letra);
+                        } else {
+                            System.out.println("Código Morse desconhecido: " + letra);
+                            resultado.append('?');
+                        }
                     }
                 }
             }
             resultado.append(' ');
         }
+
         return resultado.toString().trim();
     }
 
@@ -131,11 +157,36 @@ public class ArvoreMorse {
             
             if (c == ' ') {
                 resultado.append("  ");
-            } else if (tabelaCodificacao.containsKey(c)) {
-                resultado.append(tabelaCodificacao.get(c));
+            } else {
+                String codigoMorse = tabelaCodificacao.get(c);
+                
+                if (codigoMorse == null) {
+                    codigoMorse = CODIGOS_MORSE_PADRAO.get(c);
+                    if (codigoMorse != null) {
+                        inserir(c, codigoMorse);
+                    } else {
+                        System.out.println("Caractere '" + c + "' não possui código Morse conhecido.");
+                        continue;
+                    }
+                }
+                
+                resultado.append(codigoMorse);
                 resultado.append(" ");
             }
         }
         return resultado.toString().trim();
+    }
+
+    private char buscarNaTabelaPadrao(String codigoMorse) {
+        for (Map.Entry<Character, String> entry : CODIGOS_MORSE_PADRAO.entrySet()) {
+            if (entry.getValue().equals(codigoMorse)) {
+                return entry.getKey();
+            }
+        }
+        return '\0';
+    }
+
+    public int getTamanhoArvore() {
+        return tabelaCodificacao.size();
     }
 }

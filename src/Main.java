@@ -24,9 +24,6 @@ public class Main {
                 case 4:
                     ui.visualizarTabela();
                     break;
-                case 5:
-                    ui.demonstrarExemplo();
-                    break;
                 case 0:
                     continuar = false;
                     exibirMensagemDespedida();
@@ -44,11 +41,16 @@ public class Main {
     }
 
     private static void exibirCabecalho() {
-        System.out.println("\nSISTEMA DE CÓDIGO MORSE - TDE 2");
-        System.out.println("\nImplementação com Árvore Binária");
+        System.out.println("\n╔════════════════════════════════════════════════╗");
+        System.out.println("║     SISTEMA DE CÓDIGO MORSE - TDE 2            ║");
+        System.out.println("║     Implementação com Árvore Binária           ║");
+        System.out.println("╚════════════════════════════════════════════════╝");
+        System.out.println("\nA árvore inicia vazia e é construída dinamicamente!");
+        System.out.println("Cada vez que você codifica ou decodifica, novos");
+        System.out.println("caracteres são automaticamente adicionados à árvore.\n");
     }
 
     private static void exibirMensagemDespedida() {
-        System.out.println("\nObrigado por usar nosso sistema!");
+        System.out.println("========== Obrigado por usar nosso sistema! ==========");
     }
 }
