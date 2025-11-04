@@ -1,3 +1,5 @@
+package scr.codigomorse;
+
 public class NoMorse {
     public char caractere;
     public NoMorse esquerda;

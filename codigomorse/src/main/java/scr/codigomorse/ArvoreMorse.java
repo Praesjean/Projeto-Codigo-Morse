@@ -1,3 +1,5 @@
+package scr.codigomorse;
+
 import java.util.HashMap;
 import java.util.Map;
 
@@ -5,7 +7,7 @@ public class ArvoreMorse {
     public NoMorse raiz;
     public Map<Character, String> tabelaCodificacao;
     private static final Map<Character, String> CODIGOS_MORSE_PADRAO = new HashMap<>();
-    
+
     static {
         CODIGOS_MORSE_PADRAO.put('E', ".");
         CODIGOS_MORSE_PADRAO.put('T', "-");
@@ -54,7 +56,7 @@ public class ArvoreMorse {
         if (tabelaCodificacao.containsKey(caractere)) {
             return;
         }
-        
+
         tabelaCodificacao.put(caractere, codigoMorse);
         NoMorse atual = raiz;
 
@@ -63,22 +65,19 @@ public class ArvoreMorse {
 
             if (simbolo == '.') {
                 if (atual.esquerda == null) {
-                    char proxCaractere = (i == codigoMorse.length() - 1) ? caractere : '\0';
-                    atual.esquerda = new NoMorse(proxCaractere);
+                    atual.esquerda = new NoMorse('\0');
                 }
                 atual = atual.esquerda;
             } else if (simbolo == '-') {
                 if (atual.direita == null) {
-                    char proxCaractere = (i == codigoMorse.length() - 1) ? caractere : '\0';
-                    atual.direita = new NoMorse(proxCaractere);
+                    atual.direita = new NoMorse('\0');
                 }
                 atual = atual.direita;
             }
         }
-        if (atual.caractere == '\0') {
-            atual.caractere = caractere;
-        }
-        System.out.println("✓ Caractere '" + caractere + "' adicionado à árvore!");
+
+        atual.caractere = caractere;
+        System.out.println("✓ Caractere '" + caractere + "' (" + codigoMorse + ") adicionado à árvore!");
     }
 
     public String decodificar(String codigoMorse) {
@@ -102,7 +101,7 @@ public class ArvoreMorse {
                     char caractereDecodificado = decodificarCaractere(letra);
                     if (caractereDecodificado != '\0') {
                         resultado.append(caractereDecodificado);
-                        
+
                         char upper = Character.toUpperCase(caractereDecodificado);
                         if (!tabelaCodificacao.containsKey(upper)) {
                             inserir(upper, letra);
@@ -154,12 +153,12 @@ public class ArvoreMorse {
 
         for (int i = 0; i < texto.length(); i++) {
             char c = texto.charAt(i);
-            
+
             if (c == ' ') {
                 resultado.append("  ");
             } else {
                 String codigoMorse = tabelaCodificacao.get(c);
-                
+
                 if (codigoMorse == null) {
                     codigoMorse = CODIGOS_MORSE_PADRAO.get(c);
                     if (codigoMorse != null) {
@@ -169,7 +168,7 @@ public class ArvoreMorse {
                         continue;
                     }
                 }
-                
+
                 resultado.append(codigoMorse);
                 resultado.append(" ");
             }
